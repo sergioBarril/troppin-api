@@ -13,8 +13,9 @@ export class LoggingInterceptor implements NestInterceptor {
   private readonly logger = new Logger(LoggingInterceptor.name);
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const calledUrl = context.switchToHttp().getRequest<Request>().url;
-    this.logger.log("Request received: %s", calledUrl);
+    const request = context.switchToHttp().getRequest<Request>();
+    const calledUrl = request.url;
+    this.logger.log({ body: request.body }, "Request received: %s", calledUrl);
     return next.handle().pipe(
       tap((data) => {
         this.logger.log({ response: data }, "Response sent");

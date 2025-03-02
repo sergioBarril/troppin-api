@@ -8,6 +8,7 @@ import { APP_INTERCEPTOR, APP_PIPE } from "@nestjs/core";
 import { LoggingInterceptor } from "./config/interceptors/logging.interceptor";
 import { ZodValidationPipe } from "./config/pipes/zod-validation.pipe";
 import { DatabaseModule } from "./config/database/database.module";
+import { GuildModule } from "./guild/guild.module";
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { DatabaseModule } from "./config/database/database.module";
     }),
     LoggerModule.forRoot(getPinoConfig()),
     DatabaseModule,
+    GuildModule,
   ],
   controllers: [AppController],
   providers: [
