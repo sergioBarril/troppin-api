@@ -1,5 +1,5 @@
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
-import { CreateGuildDto } from "./guild.schemas";
+import { CreateGuildDto, UpdateGuildDto } from "./guild.schemas";
 import { GuildDatabase } from "./guild.database";
 
 @Injectable()
@@ -34,5 +34,21 @@ export class GuildService {
     }
 
     return guild;
+  }
+
+  async update(guildId: string, updateGuildDto: UpdateGuildDto) {
+    const guild = await this.getById(guildId);
+
+    const guildUpdates = {
+      ...updateGuildDto,
+      updatedAt: new Date().toISOString(),
+    };
+
+    return this.guildDatabase.update(guild.id, guildUpdates);
+  }
+
+  async delete(guildId: string) {
+    const guild = await this.getById(guildId);
+    return this.guildDatabase.delete(guild.id);
   }
 }

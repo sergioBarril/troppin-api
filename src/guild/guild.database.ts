@@ -9,7 +9,7 @@ import {
 
 import { sql } from "drizzle-orm";
 import { guildTable } from "../config/database/tables";
-import { CreateGuildDto } from "./guild.schemas";
+import { CreateGuildDto, UpdateGuildDto } from "./guild.schemas";
 
 @Injectable()
 export class GuildDatabase {
@@ -88,5 +88,32 @@ export class GuildDatabase {
       }
       throw error;
     }
+  }
+
+  async update(
+    guildId: string,
+    updateGuildDto: UpdateGuildDto & { updatedAt: string },
+  ) {
+    const rows = await this.db
+      .update(guildTable)
+      .set(updateGuildDto)
+      .where(sql`${guildTable.id} = ${guildId}`)
+      .returning();
+
+    return rows[0];
+  }
+
+  /**
+   * Delete a guild by ID
+   *
+   * @param id - The guild ID
+   */
+  async delete(id: string) {
+    const rows = await this.db
+      .delete(guildTable)
+      .where(sql`${guildTable.id} = ${id}`)
+      .returning();
+
+    return rows[0];
   }
 }

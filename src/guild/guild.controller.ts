@@ -1,6 +1,15 @@
-import { Controller, Get, Post, Body, Param, Logger } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Logger,
+  Patch,
+  Delete,
+} from "@nestjs/common";
 import { GuildService } from "./guild.service";
-import { CreateGuildDto } from "./guild.schemas";
+import { CreateGuildDto, UpdateGuildDto } from "./guild.schemas";
 
 @Controller("guilds")
 export class GuildController {
@@ -34,6 +43,27 @@ export class GuildController {
     const guild = await this.guildService.getById(guildId);
 
     this.logger.log({ guild, guildId }, "Found guild");
+
+    return guild;
+  }
+
+  @Patch(":guildId")
+  async update(
+    @Param("guildId") guildId: string,
+    @Body() updateGuildDto: UpdateGuildDto,
+  ) {
+    const guild = await this.guildService.update(guildId, updateGuildDto);
+
+    this.logger.log({ guild, guildId }, "Guild updated");
+
+    return guild;
+  }
+
+  @Delete(":guildId")
+  async delete(@Param("guildId") guildId: string) {
+    const guild = await this.guildService.delete(guildId);
+
+    this.logger.log({ guild, guildId }, "Guild deleted");
 
     return guild;
   }

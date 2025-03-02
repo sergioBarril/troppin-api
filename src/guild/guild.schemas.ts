@@ -27,4 +27,12 @@ export const CreateGuildSchema = GuildSchema.omit({
   updatedAt: true,
 });
 
+export const UpdateGuildSchema = GuildSchema.omit({
+  id: true,
+  createdAt: true,
+  discordId: true,
+  updatedAt: true,
+}).partial();
+
 export class CreateGuildDto extends createZodDto(CreateGuildSchema) {}
+export class UpdateGuildDto extends createZodDto(UpdateGuildSchema) {}
