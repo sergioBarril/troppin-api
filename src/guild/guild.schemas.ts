@@ -6,6 +6,11 @@ export const GuildSchema = z.object({
   name: z.string().trim().min(1, "Required"),
   discordId: z.string().trim().min(1, "Required"),
   createdAt: z.string().transform((val) => new Date(val)),
+  updatedAt: z
+    .string()
+    .transform((val) => new Date(val))
+    .nullable()
+    .default(null),
   channelId: z.string().trim().nullable().optional().default(null),
   downvoteThreshold: z
     .number()
@@ -19,6 +24,7 @@ export const GuildSchema = z.object({
 export const CreateGuildSchema = GuildSchema.omit({
   id: true,
   createdAt: true,
+  updatedAt: true,
 });
 
 export class CreateGuildDto extends createZodDto(CreateGuildSchema) {}

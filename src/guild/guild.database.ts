@@ -1,4 +1,7 @@
-import { Inject, Injectable } from "@nestjs/common";
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+import { ConflictException, Inject, Injectable, Logger } from "@nestjs/common";
 import {
   TURSO_DATABASE,
   TursoDatabase,
@@ -10,6 +13,8 @@ import { CreateGuildDto } from "./guild.schemas";
 
 @Injectable()
 export class GuildDatabase {
+  private readonly logger = new Logger(GuildDatabase.name);
+
   constructor(@Inject(TURSO_DATABASE) private readonly db: TursoDatabase) {}
 
   /**
@@ -64,8 +69,24 @@ export class GuildDatabase {
    * Create a new guild
    */
   async create(newGuild: CreateGuildDto) {
-    const rows = await this.db.insert(guildTable).values(newGuild).returning();
+    try {
+      const rows = await this.db
+        .insert(guildTable)
+        .values(newGuild)
+        .returning();
 
-    return rows[0];
+      return rows[0];
+    } catch (error) {
+      if (error?.message?.includes("UNIQUE constraint failed")) {
+        this.logger.error(
+          { error, errorMessage: error.message },
+          "Unique constraint violation",
+        );
+        throw new ConflictException("This guild already exists.", {
+          description: error.message,
+        });
+      }
+      throw error;
+    }
   }
 }
