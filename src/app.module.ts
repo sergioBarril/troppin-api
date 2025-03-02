@@ -9,6 +9,7 @@ import { LoggingInterceptor } from "./config/interceptors/logging.interceptor";
 import { ZodValidationPipe } from "./config/pipes/zod-validation.pipe";
 import { DatabaseModule } from "./config/database/database.module";
 import { GuildModule } from "./guild/guild.module";
+import { UserModule } from "./user/user.module";
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { GuildModule } from "./guild/guild.module";
     LoggerModule.forRoot(getPinoConfig()),
     DatabaseModule,
     GuildModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [
